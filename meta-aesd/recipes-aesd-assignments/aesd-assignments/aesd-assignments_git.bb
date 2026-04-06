@@ -4,8 +4,10 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 # TODO: Set this  with the path to your assignments rep.  Use ssh protocol and see lecture notes
 # about how to setup ssh-agent for passwordless access
-SRC_URI = "git://git@github.com:Akhilcjain/Assignment3-Akhilcjain.git;protocol=ssh;branch=master"
+#SRC_URI = "git://git@github.com:Akhilcjain/Assignment3-Akhilcjain.git;protocol=ssh;branch=master"
 #SRC_URI = "git://github.com/Akhilcjain/Assignment3-Akhilcjain.git;protocol=https;branch=master"
+SRC_URI = "git://github.com/Akhilcjain/Assignment3-Akhilcjain.git;protocol=ssh;branch=main"
+
 PV = "1.0+git${SRCPV}"
 # TODO: set to reference a specific commit hash in your assignment repo
 SRCREV = "a052157a01f5b52302df53e6ca5d155e37455a4e"
@@ -20,12 +22,13 @@ inherit update-rc.d
 
 # Init script configuration
 INITSCRIPT_PACKAGES = "${PN}"
-INITSCRIPT_NAME:${PN} = "aesd-start-stop.sh"
+INITSCRIPT_NAME:${PN} = "aesdsocket-start-stop.sh"
 INITSCRIPT_PARAMS:${PN} = "defaults"
 
 # TODO: Add the aesdsocket application and any other files you need to install
 # See https://git.yoctoproject.org/poky/plain/meta/conf/bitbake.conf?h=kirkstone
 FILES:${PN} += "${bindir}/aesdsocket"
+FILES:${PN} += "${sysconfdir}/init.d/aesdsocket-start-stop.sh"
 # TODO: customize these as necessary for any libraries you need for your application
 # (and remove comment)
 TARGET_LDFLAGS += "-lpthread -lrt"
@@ -48,11 +51,11 @@ do_install () {
 	# See example at https://github.com/cu-ecen-aeld/ecen5013-yocto/blob/ecen5013-hello-world/meta-ecen5013/recipes-ecen5013/ecen5013-hello-world/ecen5013-hello-world_git.bb
 
     # Install binary
-    install -d ${D}/usr/bin
-    install -m 0755 server/aesdsocket ${D}/usr/bin/
+    install -d ${D}${bindir}
+    install -m 0755 ${S}/aesdsocket ${D}${bindir}/
 
     # Install init script
     install -d ${D}${sysconfdir}/init.d
-    install -m 0755 server/aesd-start-stop.sh ${D}${sysconfdir}/init.d/
+    install -m 0755 ${S}/aesdsocket-start-stop.sh ${D}${sysconfdir}/init.d/
 
 }
